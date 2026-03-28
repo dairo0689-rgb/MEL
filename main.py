@@ -3,17 +3,21 @@ from datetime import datetime, timedelta
 import pytz
 
 # Configuración inicial
-st.set_page_config(page_title="Calculadora MEL Pro", layout="centered")
+st.set_page_config(page_title="Calculadora MEL Compacta", layout="centered")
 
-# Diccionario de meses en español
-meses_es = {
-    1: "Enero", 2: "Febrero", 3: "Marzo", 4: "Abril",
-    5: "Mayo", 6: "Junio", 7: "Julio", 8: "Agosto",
-    9: "Septiembre", 10: "Octubre", 11: "Noviembre", 12: "Diciembre"
+# Diccionario de meses abreviados en español
+meses_abr = {
+    1: "ene", 2: "feb", 3: "mar", 4: "abr",
+    5: "may", 6: "jun", 7: "jul", 8: "ago",
+    9: "sep", 10: "oct", 11: "nov", 12: "dic"
 }
 
-def formatear_fecha_es(fecha):
-    return f"{fecha.day} de {meses_es[fecha.month]} de {fecha.year}"
+def formatear_fecha_compacta(fecha):
+    # Formato: DD/mes/YY (ej: 28/mar/26)
+    dia = str(fecha.day).zfill(2)
+    mes = meses_abr[fecha.month]
+    anio = str(fecha.year)[2:] # Toma los últimos dos dígitos
+    return f"{dia}/{mes}/{anio}"
 
 # --- LÓGICA DE TIEMPO AUTOMÁTICA ---
 tz_local = pytz.timezone('America/Bogota')
@@ -23,7 +27,6 @@ dt_utc_ahora = dt_ahora_local.astimezone(pytz.utc)
 # --- SECCIÓN SUPERIOR: CALCULADORA MEL ---
 st.title("✈️ Calculadora de Plazos MEL")
 
-# Selección de categoría y parámetros
 col_cat, col_opt = st.columns([2, 1])
 with col_cat:
     categoria = st.selectbox("Seleccione Categoría:", ["A", "B", "C", "D"], index=1)
@@ -35,21 +38,18 @@ with col_opt:
         dias_sumar = plazos[categoria]
         st.write(f"**Plazo:** {dias_sumar} días")
 
-# Determinación del Día 0 y Vencimiento
-# El Día 0 UTC es la fecha actual en UTC
+# Cálculo de Vencimiento (Día 0 UTC + 1 + Plazo)
 fecha_inicio_conteo_utc = dt_utc_ahora.date() + timedelta(days=1)
 vencimiento_fecha_utc = fecha_inicio_conteo_utc + timedelta(days=dias_sumar)
 
 st.divider()
 
-# RESULTADO DESTACADO (En la parte superior)
+# RESULTADO DESTACADO
 st.subheader(f"Resultado Categoría {categoria}")
-st.success(f"El plazo vence el: **{formatear_fecha_es(vencimiento_fecha_utc)}** a las 23:59 UTC.")
-st.info(f"El conteo inicia a las 00:00Z del {formatear_fecha_es(fecha_inicio_conteo_utc)}")
+st.success(f"El plazo vence el: **{formatear_fecha_compacta(vencimiento_fecha_utc)}** a las 23:59 UTC.")
+st.info(f"Conteo inicia el {formatear_fecha_compacta(fecha_inicio_conteo_utc)} (00:00Z)")
 
 # --- SECCIÓN INFERIOR: REFERENCIA TEMPORAL ---
-st.write("")
-st.write("")
 st.write("")
 st.divider()
 
@@ -57,14 +57,13 @@ st.subheader("🌐 Referencia de Tiempo Actual")
 col_local, col_utc = st.columns(2)
 
 with col_local:
-    st.write("**Hora Local (Bogotá)**")
-    st.metric(label="Fecha Actual", value=formatear_fecha_es(dt_ahora_local.date()))
+    st.write("**Local (Bogotá)**")
+    st.metric(label="Fecha", value=formatear_fecha_compacta(dt_ahora_local.date()))
     st.code(dt_ahora_local.strftime("%H:%M:%S"), language=None)
 
 with col_utc:
-    st.write("**Hora UTC (Z)**")
-    st.metric(label="Fecha UTC", value=formatear_fecha_es(dt_utc_ahora.date()))
+    st.write("**UTC (Z)**")
+    st.metric(label="Fecha", value=formatear_fecha_compacta(dt_utc_ahora.date()))
     st.code(dt_utc_ahora.strftime("%H:%M:%S Z"), language=None)
 
-# Nota al pie
-st.caption("Nota: Esta aplicación toma la hora del sistema automáticamente para el cálculo en tiempo real.")
+st.caption("Nota: Formato de fecha optimizado para reportes técnicos (DD/mes/YY).")
