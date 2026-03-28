@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import pytz
 
 # Configuración inicial
-st.set_page_config(page_title="Calculadora MEL Compacta", layout="centered")
+st.set_page_config(page_title="Calculadora MEL", layout="centered")
 
 # Diccionario de meses abreviados en español
 meses_abr = {
@@ -25,7 +25,7 @@ dt_ahora_local = datetime.now(tz_local)
 dt_utc_ahora = dt_ahora_local.astimezone(pytz.utc)
 
 # --- SECCIÓN SUPERIOR: CALCULADORA MEL ---
-st.title("✈️ Calculadora de Plazos MEL")
+st.title("✈️ Calculadora  MEL")
 
 col_cat, col_opt = st.columns([2, 1])
 with col_cat:
@@ -53,7 +53,7 @@ st.info(f"Conteo inicia el {formatear_fecha_compacta(fecha_inicio_conteo_utc)} (
 st.write("")
 st.divider()
 
-st.subheader("🌐 Referencia de Tiempo Actual")
+st.subheader("🌐 Tiempo Actual")
 col_local, col_utc = st.columns(2)
 
 with col_local:
