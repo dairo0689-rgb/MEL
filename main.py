@@ -18,7 +18,7 @@ info_dias = {
     "D": "120 días consecutivos"
 }
 
-st.info(f"**Especificación:** La Categoría {categoria} permite un plazo de: {info_dias[categoria]}")
+st.info(f"**Especificación:** El intervalo {categoria} permite un plazo de: {info_dias[categoria]}")
 # --------------------------------------------
 
 # Entrada de datos
