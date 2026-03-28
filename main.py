@@ -43,10 +43,9 @@ vencimiento_fecha_utc = fecha_inicio_conteo_utc + timedelta(days=dias_sumar)
 
 st.divider()
 
-# RESULTADO DESTACADO CON DISEÑO PERSONALIZADO
+# RESULTADO DESTACADO CON FONDO ROJO Y NEGRILLA
 st.subheader(f"Resultado Categoría {categoria}")
 
-# Estilo HTML para fondo rojo claro y letra negrita
 fecha_resultado = formatear_fecha_compacta(vencimiento_fecha_utc)
 st.markdown(
     f"""
@@ -65,8 +64,8 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.write("") # Espacio estético
-
+st.write("") 
+st.info(f"Conteo inicia el {formatear_fecha_compacta(fecha_inicio_conteo_utc)} (00:00Z)")
 
 # --- SECCIÓN INFERIOR: REFERENCIA TEMPORAL ---
 st.write("")
@@ -84,3 +83,12 @@ with col_utc:
     st.write("**UTC (Z)**")
     st.metric(label="Fecha", value=formatear_fecha_compacta(dt_utc_ahora.date()))
     st.code(dt_utc_ahora.strftime("%H:%M:%S Z"), language=None)
+
+# --- CRÉDITOS ---
+st.write("")
+st.markdown(
+    "<div style='text-align: right; color: gray; font-size: 12px;'>"
+    "Created by: Dairo Romero"
+    "</div>", 
+    unsafe_allow_html=True
+)
