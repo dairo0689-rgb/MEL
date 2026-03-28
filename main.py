@@ -1,9 +1,9 @@
 import streamlit as st
 from datetime import datetime, timedelta
 
-st.set_page_config(page_title="Calculadora de Plazos MEL", layout="centered")
+st.set_page_config(page_title="Calculadora  MEL", layout="centered")
 
-st.title("✈️ Calculadora de Plazos MEL")
+st.title("✈️ Calculadora  MEL")
 st.write("Determine la fecha de vencimiento según la categoría de diferido.")
 
 # Selección de Categoría
