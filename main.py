@@ -65,7 +65,6 @@ st.markdown(
 )
 
 st.write("") 
-st.info(f"Conteo inicia el {formatear_fecha_compacta(fecha_inicio_conteo_utc)} (00:00Z)")
 
 # --- SECCIÓN INFERIOR: REFERENCIA TEMPORAL ---
 st.write("")
