@@ -66,4 +66,3 @@ with col_utc:
     st.metric(label="Fecha", value=formatear_fecha_compacta(dt_utc_ahora.date()))
     st.code(dt_utc_ahora.strftime("%H:%M:%S Z"), language=None)
 
-st.caption("Nota: Formato de fecha optimizado para reportes técnicos (DD/mes/YY).")
