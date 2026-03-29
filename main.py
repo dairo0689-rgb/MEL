@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import pytz
 
 # Configuración inicial
-st.set_page_config(page_title="Calculadora MEL", layout="centered")
+st.set_page_config(page_title="Calculadora MEL", layout="centered", page_icon="✈️")
 
 # Diccionario de meses abreviados en español
 meses_abr = {
@@ -18,7 +18,7 @@ def formatear_fecha_compacta(fecha):
     anio = str(fecha.year)[2:] 
     return f"{dia}/{mes}/{anio}"
 
-# --- LÓGICA DE TIEMPO AUTOMÁTICA ---
+# --- LÓGICA DE TIEMPO ---
 tz_local = pytz.timezone('America/Bogota')
 dt_ahora_local = datetime.now(tz_local)
 dt_utc_ahora = dt_ahora_local.astimezone(pytz.utc)
@@ -27,60 +27,65 @@ dt_utc_ahora = dt_ahora_local.astimezone(pytz.utc)
 st.title("✈️ Calculadora MEL")
 
 col_cat, col_opt = st.columns([2, 1])
+
 with col_cat:
-    categoria = st.selectbox("Seleccione Categoría:", ["A", "B", "C", "D"], index=1)
+    categoria = st.selectbox("Seleccione Categoría:", ["A", "B", "C", "D"], index=2) # Index 2 es "C"
+
 with col_opt:
     if categoria == "A":
         dias_sumar = st.number_input("Días:", min_value=1, value=1)
     else:
+        # Plazos estándar MEL (FAA/EASA)
         plazos = {"B": 3, "C": 10, "D": 120}
         dias_sumar = plazos[categoria]
         st.write(f"**Plazo:** {dias_sumar} días")
 
-# Cálculo de Vencimiento
-fecha_inicio_conteo_utc = dt_utc_ahora.date() + timedelta(days=1)
-vencimiento_fecha_utc = fecha_inicio_conteo_utc + timedelta(days=dias_sumar)
+# --- CORRECCIÓN DE LA LÓGICA ---
+# Según la norma, el intervalo comienza a la medianoche del día siguiente al reporte.
+# Sumar directamente los días a la fecha actual da el resultado correcto del límite.
+vencimiento_fecha_utc = dt_utc_ahora.date() + timedelta(days=dias_sumar)
 
 st.divider()
 
-# RESULTADO DESTACADO CON FONDO ROJO Y NEGRILLA
+# --- RESULTADO ---
 st.subheader(f"Resultado Categoría {categoria}")
 
 fecha_resultado = formatear_fecha_compacta(vencimiento_fecha_utc)
+
 st.markdown(
     f"""
     <div style="
         background-color: #ffe6e6; 
-        padding: 15px; 
+        padding: 20px; 
         border-radius: 10px; 
         border: 1px solid #ffb3b3;
         text-align: center;
+        margin-bottom: 20px;
         ">
-        <span style="color: #cc0000; font-size: 20px;">
-            El plazo vence el: <b>{fecha_resultado}</b> a las 23:59 UTC
+        <span style="color: #cc0000; font-size: 22px; font-weight: bold;">
+            El plazo vence el: {fecha_resultado} a las 23:59 UTC
         </span>
     </div>
     """, 
     unsafe_allow_html=True
 )
 
-st.write("") 
+# Nota aclaratoria técnica
+st.info(f"Nota: Para Categoría {categoria}, el conteo de {dias_sumar} días comienza a partir de las 00:00Z del día siguiente al reporte.")
 
 # --- SECCIÓN INFERIOR: REFERENCIA TEMPORAL ---
-st.write("")
 st.divider()
-
 st.subheader("🌐 Tiempo Actual")
 col_local, col_utc = st.columns(2)
 
 with col_local:
     st.write("**Local (Bogotá)**")
-    st.metric(label="Fecha", value=formatear_fecha_compacta(dt_ahora_local.date()))
+    st.metric(label="Fecha Local", value=formatear_fecha_compacta(dt_ahora_local.date()))
     st.code(dt_ahora_local.strftime("%H:%M:%S"), language=None)
 
 with col_utc:
     st.write("**UTC (Z)**")
-    st.metric(label="Fecha", value=formatear_fecha_compacta(dt_utc_ahora.date()))
+    st.metric(label="Fecha UTC", value=formatear_fecha_compacta(dt_utc_ahora.date()))
     st.code(dt_utc_ahora.strftime("%H:%M:%S Z"), language=None)
 
 # --- CRÉDITOS ---
@@ -91,3 +96,4 @@ st.markdown(
     "</div>", 
     unsafe_allow_html=True
 )
+
